@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = axios.create({ baseURL: "http://localhost:3040" });
+const API = axios.create({ baseURL: "https://todo-second.onrender.com" });
 
 export const getTodos = () => API.get("/todos");
 export const getSingleTodo = (id) => API.get(`/todos/single/${id}`);
