@@ -40,16 +40,7 @@ export const deleteATodo = createAsyncThunk(
   async ({ id, toast }, { rejectWithValue }) => {
     try {
       const response = api.deleteTodo(id);
-      toast.success("Todo deleted", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+
       return (await response).data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -68,16 +59,7 @@ export const editeATodo = createAsyncThunk(
     try {
       const response = api.editeTodo(id, todoforms);
       setEditeOn(false);
-      toast.success("Updated succesfully", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+
       return (await response).data;
     } catch (err) {
       return rejectWithValue(err);
@@ -90,16 +72,7 @@ export const likeAtodo = createAsyncThunk(
   async ({ id, like, toast }, { rejectWithValue }) => {
     try {
       const response = api.likeTodo(id, like);
-      toast.success(`You ${like ? "You LIked" : "Unliked"}`, {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+
       return (await response).data;
     } catch (err) {
       return rejectWithValue(err);
@@ -163,10 +136,20 @@ const Todos = createSlice({
         state.loading = true;
       })
       .addCase(deleteATodo.fulfilled, (state, action) => {
-        const { id } = action.meta.arg;
+        const { id, toast } = action.meta.arg;
 
         state.loading = false;
         state.todos = state.todos.filter((item) => item._id !== id);
+        toast.success("Todo deleted", {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       })
       .addCase(deleteATodo.rejected, (state, action) => {
         state.loading = false;
@@ -179,7 +162,7 @@ const Todos = createSlice({
       .addCase(editeATodo.fulfilled, (state, action) => {
         state.loading = false;
         const { arg } = action.meta;
-        const { id } = arg;
+        const { id, toast } = arg;
 
         if (id) {
           const newLIst = [...state.todos];
@@ -190,6 +173,16 @@ const Todos = createSlice({
           });
           state.todos = newLIst;
         }
+        toast.success("Updated succesfully", {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       })
       .addCase(editeATodo.rejected, (state, action) => {
         state.loading = false;
@@ -200,7 +193,7 @@ const Todos = createSlice({
       })
       .addCase(likeAtodo.fulfilled, (state, action) => {
         state.loading = false;
-        const { id, like } = action.meta.arg;
+        const { id, like, toast } = action.meta.arg;
 
         if (id) {
           const newLIst = [...state.todos];
@@ -211,6 +204,16 @@ const Todos = createSlice({
           });
           state.todos = newLIst;
         }
+        toast.success(`You ${like ? "You LIked" : "Unliked"}`, {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       })
       .addCase(likeAtodo.rejected, (state, action) => {
         state.loading = false;
