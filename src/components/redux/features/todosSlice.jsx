@@ -15,19 +15,10 @@ export const getAllTodos = createAsyncThunk(
 
 export const addATodo = createAsyncThunk(
   "todo/addATodo",
-  async ({ todoforms, toast }, { rejectWithValue }) => {
+  async ({ todoforms, toast, setTodoForm }, { rejectWithValue }) => {
     try {
       const response = api.createTodo(todoforms);
-      toast.success("Added Succesfully", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+
       return (await response).data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -55,7 +46,10 @@ export const edtingFunction = (id, form) => {
 
 export const editeATodo = createAsyncThunk(
   "todo/editeATodo",
-  async ({ id, todoforms, setEditeOn, toast }, { rejectWithValue }) => {
+  async (
+    { id, todoforms, setEditeOn, toast, setTodoForm },
+    { rejectWithValue }
+  ) => {
     try {
       const response = api.editeTodo(id, todoforms);
       setEditeOn(false);
@@ -125,8 +119,20 @@ const Todos = createSlice({
         state.loading = true;
       })
       .addCase(addATodo.fulfilled, (state, action) => {
+        const { toast, setTodoForm } = action.meta.arg;
         state.loading = false;
         state.todos = [...state.todos, action.payload];
+        toast.success("Added Succesfully", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setTodoForm({ todo: "" });
       })
       .addCase(addATodo.rejected, (state, action) => {
         state.loading = false;
@@ -162,7 +168,7 @@ const Todos = createSlice({
       .addCase(editeATodo.fulfilled, (state, action) => {
         state.loading = false;
         const { arg } = action.meta;
-        const { id, toast } = arg;
+        const { id, toast, setTodoForm } = arg;
 
         if (id) {
           const newLIst = [...state.todos];
@@ -183,6 +189,7 @@ const Todos = createSlice({
           progress: undefined,
           theme: "light",
         });
+        setTodoForm({ todo: "" });
       })
       .addCase(editeATodo.rejected, (state, action) => {
         state.loading = false;

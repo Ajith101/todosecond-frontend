@@ -21,10 +21,11 @@ const AddTodo = ({ setEditeOn, editeOn, todo, todoforms, setTodoForm }) => {
               todoforms: todoforms,
               setEditeOn,
               toast,
+              setTodoForm,
             })
           )
-        : dispatch(addATodo({ todoforms, toast }));
-      setTodoForm({ todo: "" });
+        : dispatch(addATodo({ todoforms, toast, setTodoForm }));
+      // setTodoForm({ todo: "" });
     } else {
       if (todoforms.todo === editeTodo.todo) {
         toast.error("Same text nothing changes", {
