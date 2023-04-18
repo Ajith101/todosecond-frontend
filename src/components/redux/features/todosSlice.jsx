@@ -1,0 +1,235 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import * as api from "../api";
+
+export const getAllTodos = createAsyncThunk(
+  "todo/getAllTodos",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.getTodos();
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const addATodo = createAsyncThunk(
+  "todo/addATodo",
+  async ({ todoforms, toast }, { rejectWithValue }) => {
+    try {
+      const response = api.createTodo(todoforms);
+      toast.success("Added Succesfully", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return (await response).data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const deleteATodo = createAsyncThunk(
+  "todo/deleteATodo",
+  async ({ id, toast }, { rejectWithValue }) => {
+    try {
+      const response = api.deleteTodo(id);
+      toast.success("Todo deleted", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return (await response).data;
+    } catch (err) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const edtingFunction = (id, form) => {
+  console.log(id);
+  console.log(form);
+};
+
+export const editeATodo = createAsyncThunk(
+  "todo/editeATodo",
+  async ({ id, todoforms, setEditeOn, toast }, { rejectWithValue }) => {
+    try {
+      const response = api.editeTodo(id, todoforms);
+      setEditeOn(false);
+      toast.success("Updated succesfully", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return (await response).data;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const likeAtodo = createAsyncThunk(
+  "todo/likeAtodo",
+  async ({ id, like, toast }, { rejectWithValue }) => {
+    try {
+      const response = api.likeTodo(id, like);
+      toast.success(`You ${like ? "You LIked" : "Unliked"}`, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      return (await response).data;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+export const getASingleTodo = createAsyncThunk(
+  "todo/getASingleTodo",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = api.getSingleTodo(id);
+      return (await response).data;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+
+const Todos = createSlice({
+  name: "todo",
+  initialState: {
+    loading: false,
+    todos: [],
+    error: "",
+    editeOnorOFf: false,
+    editeTodo: [],
+    singleTodo: [],
+  },
+  reducers: {
+    editeTodoToPage: (state, action) => {
+      state.editeTodo = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getAllTodos.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getAllTodos.fulfilled, (state, action) => {
+        state.loading = false;
+        state.todos = action.payload;
+        state.loading = false;
+      })
+      .addCase(getAllTodos.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(addATodo.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(addATodo.fulfilled, (state, action) => {
+        state.loading = false;
+        state.todos = [...state.todos, action.payload];
+      })
+      .addCase(addATodo.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteATodo.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(deleteATodo.fulfilled, (state, action) => {
+        const { id } = action.meta.arg;
+
+        state.loading = false;
+        state.todos = state.todos.filter((item) => item._id !== id);
+      })
+      .addCase(deleteATodo.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
+      })
+      .addCase(editeATodo.pending, (state, action) => {
+        state.loading = true;
+        state.editeOnorOFf = true;
+      })
+      .addCase(editeATodo.fulfilled, (state, action) => {
+        state.loading = false;
+        const { arg } = action.meta;
+        const { id } = arg;
+
+        if (id) {
+          const newLIst = [...state.todos];
+          newLIst.forEach((itemes) => {
+            if (itemes._id === id) {
+              itemes.todo = action.payload.todo;
+            }
+          });
+          state.todos = newLIst;
+        }
+      })
+      .addCase(editeATodo.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(likeAtodo.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(likeAtodo.fulfilled, (state, action) => {
+        state.loading = false;
+        const { id, like } = action.meta.arg;
+
+        if (id) {
+          const newLIst = [...state.todos];
+          newLIst.forEach((itemes) => {
+            if (itemes._id === id) {
+              itemes.like = like;
+            }
+          });
+          state.todos = newLIst;
+        }
+      })
+      .addCase(likeAtodo.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getASingleTodo.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(getASingleTodo.fulfilled, (state, action) => {
+        state.loading = false;
+        state.singleTodo = action.payload;
+      })
+      .addCase(getASingleTodo.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
+});
+
+export default Todos.reducer;
+
+export const { editeTodoToPage } = Todos.actions;
