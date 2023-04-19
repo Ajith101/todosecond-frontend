@@ -29,3 +29,39 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+/* just hamburger */
+
+.menu-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.menu-btn .line {
+  width: 28px;
+  height: 2px;
+  background-color: white;
+  transform-origin: left;
+  transition: transform 0.5s ease, opacity 0.2s ease;
+}
+
+.menu-btn .middle-line {
+  transition-delay: 0.1s;
+}
+.menu-btn.open .middle-line {
+  opacity: 0;
+}
+.menu-btn.open .top-line {
+  transform: rotate(45deg);
+}
+.menu-btn.open .bottom-line {
+  transform: rotate(-45deg);
+}
+
+.menu-btn-open {
+  display: none;
+}
+
+.menu-btn-off {
+  display: block;
+}

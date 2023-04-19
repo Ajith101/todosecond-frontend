@@ -17,7 +17,6 @@ const SinglePage = () => {
 
   return (
     <>
-      {loading ? <Loader /> : null}
       <div className="flex justify-center flex-col items-center">
         <h1 className="mt-5 text-3xl border-b-[5px] border-b-violet-600 px-3">
           Todo Details

@@ -48,7 +48,10 @@ const Home = () => {
           className="bg-white p-2 w-full flex justify-between items-center pl-5 rounded-md"
           key={id}
         >
-          <h2 onClick={() => navigate(`/details/${itemes._id}`)}>
+          <h2
+            className="max-w-[80%] overflow-auto break-words"
+            onClick={() => navigate(`/details/${itemes._id}`)}
+          >
             {`${id + 1}.) `} {itemes.todo}
           </h2>{" "}
           <div className="flex justify-center items-center gap-3">
@@ -80,7 +83,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="flex justify-center flex-col items-center">
+      <div className="flex justify-center pt-16 flex-col items-center">
         <div className="bg-violet-300 p-2 w-[95%] md:w-[70%] rounded-md mt-10 flex flex-col gap-5">
           <div className="">
             <AddTodo
@@ -93,7 +96,6 @@ const Home = () => {
             />
           </div>
           <div className="flex flex-col gap-2 justify-start items-start">
-            {loading ? <Loader /> : null}
             {displayTodos}
           </div>
         </div>
