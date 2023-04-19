@@ -52,7 +52,6 @@ export const editeATodo = createAsyncThunk(
   ) => {
     try {
       const response = api.editeTodo(id, todoforms);
-      setEditeOn(false);
 
       return (await response).data;
     } catch (err) {
@@ -168,7 +167,7 @@ const Todos = createSlice({
       .addCase(editeATodo.fulfilled, (state, action) => {
         state.loading = false;
         const { arg } = action.meta;
-        const { id, toast, setTodoForm } = arg;
+        const { id, toast, setTodoForm, setEditeOn } = arg;
 
         if (id) {
           const newLIst = [...state.todos];
@@ -190,6 +189,7 @@ const Todos = createSlice({
           theme: "light",
         });
         setTodoForm({ todo: "" });
+        setEditeOn(false);
       })
       .addCase(editeATodo.rejected, (state, action) => {
         state.loading = false;
