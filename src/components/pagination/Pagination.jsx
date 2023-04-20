@@ -24,10 +24,8 @@ const Pagination = () => {
         onClick={() => dispatch(setCurrentPage(item))}
         key={id}
         className={`${
-          item === currentPage
-            ? "bg-white text-violet-600 underline"
-            : "bg-violet-600 text-white"
-        } p-2 rounded-lg text-center border-[2px] border-white`}
+          item === currentPage ? "underline" : null
+        } p-2 rounded-lg text-center text-violet-700 border-[2px] border-white`}
       >
         {item}
       </li>
