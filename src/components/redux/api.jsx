@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const API = axios.create({ baseURL: "https://todo-second.onrender.com" });
-const API = axios.create({ baseURL: "http://localhost:3040" });
+const API = axios.create({ baseURL: "https://todo-second.onrender.com" });
+// const API = axios.create({ baseURL: "http://localhost:3040" });
 
 export const getTodos = (page) => API.get(`/todos?page=${page}`);
 export const getSingleTodo = (id) => API.get(`/todos/single/${id}`);
