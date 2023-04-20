@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addATodo, editeATodo } from "./redux/features/todosSlice";
+import { addATodo, editeATodo, getAllTodos } from "./redux/features/todosSlice";
 import { toast } from "react-toastify";
 
 const AddTodo = ({ setEditeOn, editeOn, todo, todoforms, setTodoForm }) => {
   const dispatch = useDispatch();
-  const { editeTodo } = useSelector((state) => ({ ...state?.todo }));
+  const { editeTodo, currentPage } = useSelector((state) => ({
+    ...state?.todo,
+  }));
 
   const inputHandler = (e) => {
     const { name, value } = e.target;
@@ -54,6 +56,10 @@ const AddTodo = ({ setEditeOn, editeOn, todo, todoforms, setTodoForm }) => {
       return;
     }
   };
+
+  // useEffect(() => {
+  //   dispatch(getAllTodos(currentPage));
+  // }, []);
 
   return (
     <>

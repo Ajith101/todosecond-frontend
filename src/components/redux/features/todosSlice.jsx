@@ -3,9 +3,9 @@ import * as api from "../api";
 
 export const getAllTodos = createAsyncThunk(
   "todo/getAllTodos",
-  async (_, { rejectWithValue }) => {
+  async (page, { rejectWithValue }) => {
     try {
-      const response = await api.getTodos();
+      const response = await api.getTodos(page);
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -94,10 +94,17 @@ const Todos = createSlice({
     editeOnorOFf: false,
     editeTodo: [],
     singleTodo: [],
+    currentPage: 1,
+    numberOfPages: null,
+    itemesPerPAge: null,
+    totalTodo: null,
   },
   reducers: {
     editeTodoToPage: (state, action) => {
       state.editeTodo = action.payload;
+    },
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -107,7 +114,11 @@ const Todos = createSlice({
       })
       .addCase(getAllTodos.fulfilled, (state, action) => {
         state.loading = false;
-        state.todos = action.payload;
+        state.todos = action.payload.data;
+        state.numberOfPages = action.payload.numberOfPages;
+        state.currentPage = action.payload.currentPage;
+        state.itemesPerPAge = action.payload.limit;
+        state.totalTodo = action.payload.totalTodos;
         state.loading = false;
       })
       .addCase(getAllTodos.rejected, (state, action) => {
@@ -120,15 +131,13 @@ const Todos = createSlice({
       .addCase(addATodo.fulfilled, (state, action) => {
         const { toast, setTodoForm } = action.meta.arg;
         state.loading = false;
-        state.todos = [...state.todos, action.payload];
+        if (state.todos.length !== 6) {
+          state.todos = [...state.todos, action.payload.todo];
+        }
+        state.totalTodo = action.payload.totalTodos;
         toast.success("Added Succesfully", {
           position: "top-right",
           autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
           theme: "light",
         });
         setTodoForm({ todo: "" });
@@ -142,7 +151,6 @@ const Todos = createSlice({
       })
       .addCase(deleteATodo.fulfilled, (state, action) => {
         const { id, toast } = action.meta.arg;
-
         state.loading = false;
         state.todos = state.todos.filter((item) => item._id !== id);
         toast.success("Todo deleted", {
@@ -155,6 +163,7 @@ const Todos = createSlice({
           progress: undefined,
           theme: "light",
         });
+        state.totalTodo = action.payload.totalTodo;
       })
       .addCase(deleteATodo.rejected, (state, action) => {
         state.loading = false;
@@ -242,4 +251,4 @@ const Todos = createSlice({
 
 export default Todos.reducer;
 
-export const { editeTodoToPage } = Todos.actions;
+export const { editeTodoToPage, setCurrentPage } = Todos.actions;

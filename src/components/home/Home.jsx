@@ -5,6 +5,7 @@ import {
   editeTodoToPage,
   getAllTodos,
   likeAtodo,
+  setCurrentPage,
 } from "../redux/features/todosSlice";
 import AddTodo from "../AddTodo";
 import { AiFillDelete } from "react-icons/ai";
@@ -14,6 +15,7 @@ import { AiFillLike } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Loader from "../Loader";
+import Pagination from "../pagination/Pagination";
 
 const Home = () => {
   const [editeOn, setEditeOn] = useState(false);
@@ -27,11 +29,21 @@ const Home = () => {
   const [singleTodo, setSingleTodo] = useState("");
   const { todo } = todoforms;
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getAllTodos());
-  }, []);
+  const { todos, loading, currentPage } = useSelector((state) => ({
+    ...state.todo,
+  }));
 
-  const { todos, loading } = useSelector((state) => ({ ...state.todo }));
+  useEffect(() => {
+    dispatch(getAllTodos(currentPage));
+  }, [currentPage]);
+
+  const deleteBTn = (itemes) => {
+    if (todos.length === 1) {
+      dispatch(setCurrentPage(currentPage - 1));
+      dispatch(deleteATodo({ id: itemes._id, toast }));
+    }
+    dispatch(deleteATodo({ id: itemes._id, toast }));
+  };
 
   const editeTodoBTn = (itemes) => {
     dispatch(editeTodoToPage(itemes));
@@ -71,10 +83,7 @@ const Home = () => {
               />
             )}
 
-            <AiFillDelete
-              size={"25px"}
-              onClick={() => dispatch(deleteATodo({ id: itemes._id, toast }))}
-            />
+            <AiFillDelete size={"25px"} onClick={() => deleteBTn(itemes)} />
             <BsFillPenFill onClick={() => editeTodoBTn(itemes)} size={"25px"} />
           </div>
         </div>
@@ -99,6 +108,7 @@ const Home = () => {
             {displayTodos}
           </div>
         </div>
+        <Pagination />
       </div>
     </>
   );
