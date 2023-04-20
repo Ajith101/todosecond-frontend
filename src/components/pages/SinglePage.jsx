@@ -17,7 +17,7 @@ const SinglePage = () => {
 
   return (
     <>
-      <div className="flex justify-center flex-col items-center">
+      <div className="flex justify-center py-20 flex-col items-center">
         <h1 className="mt-5 text-3xl border-b-[5px] border-b-violet-600 px-3">
           Todo Details
         </h1>
@@ -25,7 +25,9 @@ const SinglePage = () => {
           <div className="bg-white p-2 w-full flex gap-4 flex-col items-center pl-5 rounded-md">
             {loading ? null : (
               <>
-                <h1 className="text-xl">{singleTodo.todo}</h1>
+                <h1 className="text-xl overflow-auto break-words max-w-[100%]">
+                  {singleTodo.todo}
+                </h1>
                 <h3 className="text-slate-500">
                   Added On {":"} {singleTodo.added_on}
                 </h3>

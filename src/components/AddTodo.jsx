@@ -57,20 +57,22 @@ const AddTodo = ({ setEditeOn, editeOn, todo, todoforms, setTodoForm }) => {
 
   return (
     <>
-      <div>{editeOn ? "Edite Todo" : "Add Todo"}</div>
-      <input
-        className="p-2 rounded-sm border-[2px] mr-2"
-        onChange={(e) => inputHandler(e)}
-        name="todo"
-        value={todo}
-        type="text"
-      />
-      <button
-        className="bg-yellow-500 text-white rounded-md p-3 text-center border-black"
-        onClick={() => addOrEdite()}
-      >
-        {editeOn ? "Update" : "Add Todo"}
-      </button>
+      <h1>{editeOn ? "Edite Todo" : "Add Todo"}</h1>
+      <div className="flex gap-4 w-full">
+        <input
+          className="p-2 rounded-sm border-[2px] md:mr-2 w-[60%] flex justify-between md:flex-none md:w-[70%]"
+          onChange={(e) => inputHandler(e)}
+          name="todo"
+          value={todo}
+          type="text"
+        />
+        <button
+          className="bg-yellow-500 text-white rounded-md p-3 text-center border-black"
+          onClick={() => addOrEdite()}
+        >
+          {editeOn ? "Update" : "Add Todo"}
+        </button>
+      </div>
     </>
   );
 };
